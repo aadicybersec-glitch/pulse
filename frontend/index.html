@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PULSE — Intelligent Deadline Management System. Parse natural language deadlines, track urgency in real-time, and never miss a due date.">
+    <title>PULSE — Intelligent Deadline Management</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- ============================================================ -->
+    <!-- AMBIENT BACKGROUND                                            -->
+    <!-- ============================================================ -->
+    <div class="ambient-bg">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- TOP NAV                                                       -->
+    <!-- ============================================================ -->
+    <nav class="top-nav">
+        <div class="nav-brand">
+            <span class="brand-icon">⚡</span>
+            <span class="brand-name">PULSE</span>
+            <span class="brand-tag">Intelligent Deadlines</span>
+        </div>
+        <div class="nav-actions">
+            <div class="class-badge" id="classBadge" style="display:none;">
+                <span class="class-dot"></span>
+                <span id="classCodeDisplay">—</span>
+            </div>
+            <button class="btn btn-ghost" id="btnNotifications" title="Notifications">
+                <span class="notif-icon">🔔</span>
+                <span class="notif-count" id="notifCount" style="display:none;">0</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ============================================================ -->
+    <!-- MAIN LAYOUT                                                   -->
+    <!-- ============================================================ -->
+    <main class="app-main">
+
+        <!-- ---- LEFT: Input + Class Panel ---- -->
+        <aside class="sidebar">
+            <!-- Input Card -->
+            <section class="card card-input">
+                <h2 class="card-title">
+                    <span class="card-icon">🧠</span>
+                    Add Deadline
+                </h2>
+                <p class="card-subtitle">Type naturally — PULSE understands you.</p>
+                <div class="input-group">
+                    <textarea id="deadlineInput" rows="2" placeholder='e.g. "Math assignment day after tomorrow 6pm"'></textarea>
+                    <button class="btn btn-primary" id="btnAdd">
+                        <span class="btn-pulse"></span>
+                        Parse &amp; Add
+                    </button>
+                </div>
+                <div id="parseResult" class="parse-result" style="display:none;"></div>
+            </section>
+
+            <!-- Class Panel -->
+            <section class="card card-class">
+                <h2 class="card-title">
+                    <span class="card-icon">👥</span>
+                    Class Room
+                </h2>
+                <div class="class-actions">
+                    <div class="input-row">
+                        <input type="text" id="classNameInput" placeholder="Class name" />
+                        <button class="btn btn-small btn-accent" id="btnCreateClass">Create</button>
+                    </div>
+                    <div class="divider-text">or join existing</div>
+                    <div class="input-row">
+                        <input type="text" id="joinCodeInput" placeholder="Enter 6-char code" maxlength="6" />
+                        <button class="btn btn-small btn-outline" id="btnJoinClass">Join</button>
+                    </div>
+                </div>
+                <div id="classInfo" class="class-info" style="display:none;"></div>
+            </section>
+
+            <!-- Stress Meter -->
+            <section class="card card-stress">
+                <h2 class="card-title">
+                    <span class="card-icon">💓</span>
+                    Stress Level
+                </h2>
+                <div class="stress-meter">
+                    <div class="stress-bar">
+                        <div class="stress-fill" id="stressFill" style="width:0%"></div>
+                    </div>
+                    <div class="stress-info">
+                        <span class="stress-score" id="stressScore">0</span>
+                        <span class="stress-level" id="stressLevel">—</span>
+                    </div>
+                    <p class="stress-message" id="stressMessage">Loading…</p>
+                </div>
+            </section>
+        </aside>
+
+        <!-- ---- CENTER: Deadline Feed ---- -->
+        <section class="feed">
+            <div class="feed-header">
+                <h1 id="feedTitle">📋 All Deadlines</h1>
+                <div class="feed-controls">
+                    <button class="btn btn-chip active" data-filter="all">All</button>
+                    <button class="btn btn-chip" data-filter="active">Active</button>
+                    <button class="btn btn-chip" data-filter="overdue">Overdue</button>
+                    <button class="btn btn-chip" data-filter="completed">Done</button>
+                </div>
+            </div>
+            <div id="deadlineList" class="deadline-list">
+                <div class="empty-state">
+                    <div class="empty-icon">🎯</div>
+                    <p>No deadlines yet.</p>
+                    <p class="muted">Type a deadline in natural language to get started.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ---- RIGHT: Intelligence Panel ---- -->
+        <aside class="sidebar sidebar-right">
+            <!-- Suggestions -->
+            <section class="card card-suggestions">
+                <h2 class="card-title">
+                    <span class="card-icon">💡</span>
+                    Smart Suggestions
+                </h2>
+                <ul id="suggestionsList" class="suggestions-list">
+                    <li class="suggestion-item muted">Loading…</li>
+                </ul>
+            </section>
+
+            <!-- Notifications Log -->
+            <section class="card card-notifs">
+                <h2 class="card-title">
+                    <span class="card-icon">📣</span>
+                    Notifications
+                </h2>
+                <div id="notifList" class="notif-list">
+                    <p class="muted">No notifications yet.</p>
+                </div>
+            </section>
+
+            <!-- Overdue Tracker -->
+            <section class="card card-overdue-tracker">
+                <h2 class="card-title">
+                    <span class="card-icon">⏰</span>
+                    Overdue Tracker
+                </h2>
+                <div id="overdueInfo" class="overdue-info">
+                    <p class="muted">All clear!</p>
+                </div>
+            </section>
+        </aside>
+    </main>
+
+    <!-- ============================================================ -->
+    <!-- TOAST CONTAINER                                               -->
+    <!-- ============================================================ -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
