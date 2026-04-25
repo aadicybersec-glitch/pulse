@@ -81,7 +81,10 @@ class DBManager:
         if _firebase_available and cred_path and database_url:
             try:
                 if not firebase_admin._apps:
-                    cred = credentials.Certificate(cred_path)
+                    if cred_path.strip().startswith("{"):
+                        cred = credentials.Certificate(json.loads(cred_path))
+                    else:
+                        cred = credentials.Certificate(cred_path)
                     firebase_admin.initialize_app(cred, {
                         "databaseURL": database_url
                     })
