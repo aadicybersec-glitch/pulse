@@ -25,7 +25,7 @@ _DATEPARSER_OK = False
 
 # ── Subject keywords ─────────────────────────────────────────────────────────
 SUBJECT_KEYWORDS: list[str] = [
-    "math", "mathematics", "physics", "chemistry", "biology",
+    "math", "maths", "mathematics", "physics", "chemistry", "biology",
     "english", "history", "geography", "economics",
     "computer science", "cs", "programming", "python", "java",
     "electronics", "electrical", "mechanical", "civil",
@@ -143,29 +143,29 @@ def _parse_custom(text: str) -> Optional[datetime]:
     t = text.lower()
     now = _now()
 
-    # ── "in N days / hours / weeks / minutes" ──
-    m = re.search(r'in\s+(\d+)\s+(minute|hour|day|week)s?', t)
+    # ── "in/due/by/within N days/hours/weeks/minutes [from now]" ──
+    # Handles: "in 2 hours", "due 30 mins", "by 2 days", "5 hours from now"
+    m = re.search(r'(?:in|due|within|by)?\s*(\d+)\s+(minute|min|hour|hr|day|week)s?(?:\s+(?:from\s+now|ahead))?', t)
     if m:
-        n, unit = int(m.group(1)), m.group(2)
+        n, unit_raw = int(m.group(1)), m.group(2)
+        # Normalize unit
+        unit = unit_raw
+        if unit.startswith("min"): unit = "minute"
+        if unit.startswith("hr"):  unit = "hour"
+        
         delta = {
             "minute": timedelta(minutes=n),
             "hour":   timedelta(hours=n),
             "day":    timedelta(days=n),
             "week":   timedelta(weeks=n),
         }[unit]
-        return _apply_time(now + delta, t) if unit in ("day", "week") else now + delta
-
-    # ── "N days/hours from now" ──
-    m = re.search(r'(\d+)\s+(minute|hour|day|week)s?\s+from\s+now', t)
-    if m:
-        n, unit = int(m.group(1)), m.group(2)
-        delta = {
-            "minute": timedelta(minutes=n),
-            "hour":   timedelta(hours=n),
-            "day":    timedelta(days=n),
-            "week":   timedelta(weeks=n),
-        }[unit]
-        return _apply_time(now + delta, t) if unit in ("day", "week") else now + delta
+        
+        # If it's days or weeks, default to 11:59 PM on that day.
+        # If it's minutes or hours, keep it precisely relative to now.
+        if unit in ("day", "week"):
+            return _apply_time(now + delta, t)
+        else:
+            return now + delta
 
     # ── "day after tomorrow" ──
     if "day after tomorrow" in t:
@@ -294,6 +294,8 @@ def parse_deadline(raw_input: str) -> dict:
 
 # ── Self-test ─────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
+    # Simulate current time for test consistency if needed, 
+    # but here we just run with real now.
     samples = [
         "Math assignment day after tomorrow 6pm",
         "Physics record next Monday",
@@ -301,12 +303,15 @@ if __name__ == "__main__":
         "Chemistry project next Friday 11:59pm",
         "CS quiz tomorrow morning",
         "Data structures HW in 5 hours",
+        "maths assignment due 2 hours",
         "Submit biology lab by next Wednesday",
         "Math exam next Friday 3pm",
         "History essay in 2 weeks",
-        "Meeting today at 4pm",
+        "Meeting tomorrow at 4pm",
+        "Finish report due 45 mins",
+        "Physics lab within 1 day",
     ]
     for s in samples:
         r = parse_deadline(s)
-        status = "✅" if r["parsed_ok"] else "❌"
-        print(f"{status} [{r['subject']:15s}] [{r['task_type']:12s}] {r['due_date'] or 'FAILED':26s}  ← {s}")
+        status = "OK" if r["parsed_ok"] else "FAIL"
+        print(f"{status:4s} [{r['subject']:15s}] [{r['task_type']:12s}] {r['due_date'] or 'FAILED':26s}  <-- {s}")
