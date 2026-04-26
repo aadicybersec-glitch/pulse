@@ -30,6 +30,7 @@ const overdueInfo = $("#overdueInfo");
 const toastContainer = $("#toastContainer");
 const btnNotifications = $("#btnNotifications");
 const btnThemeToggle = $("#btnThemeToggle");
+const btnClear = $("#btnClear");
 
 // ── Theme Toggle ──
 function applyTheme(theme) {
@@ -73,14 +74,24 @@ function esc(str) { const d = document.createElement("div"); d.textContent = str
 
 // ── Add Deadline ──
 btnAdd.addEventListener("click", addDeadline);
+btnClear.addEventListener("click", () => {
+  deadlineInput.value = "";
+  parseResult.style.display = "none";
+  toast("Input cleared", "info");
+});
 deadlineInput.addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); addDeadline(); } });
 
 async function addDeadline() {
   const raw = deadlineInput.value.trim();
   if (!raw) { toast("Type a deadline first!", "warning"); return; }
+  
+  if (!currentClassCode) {
+    toast("Please join or create a class first!", "error");
+    return;
+  }
+
   btnAdd.disabled = true; btnAdd.textContent = "Parsing…";
-  const body = { input: raw };
-  if (currentClassCode) body.class_code = currentClassCode;
+  const body = { input: raw, class_code: currentClassCode };
   const res = await api("/add", { method: "POST", body: JSON.stringify(body) });
   btnAdd.disabled = false; btnAdd.innerHTML = '<span class="btn-pulse"></span>Parse &amp; Add';
   if (res.error) {

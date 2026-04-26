@@ -64,10 +64,13 @@
                 <p class="card-subtitle">Type naturally — PULSE understands you.</p>
                 <div class="input-group">
                     <textarea id="deadlineInput" rows="2" placeholder='e.g. "Math assignment day after tomorrow 6pm"'></textarea>
-                    <button class="btn btn-primary" id="btnAdd">
-                        <span class="btn-pulse"></span>
-                        Parse &amp; Add
-                    </button>
+                    <div class="input-row">
+                        <button class="btn btn-primary" id="btnAdd" style="flex: 2;">
+                            <span class="btn-pulse"></span>
+                            Parse &amp; Add
+                        </button>
+                        <button class="btn btn-outline" id="btnClear" style="flex: 1;">Clear</button>
+                    </div>
                 </div>
                 <div id="parseResult" class="parse-result" style="display:none;"></div>
             </section>
