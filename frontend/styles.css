@@ -59,6 +59,72 @@
     --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 }
 
+/* ================================================================
+   DARK THEME OVERRIDE
+   ================================================================ */
+
+[data-theme="dark"] {
+    --bg-base: #0a0a0f;
+    --bg-surface: rgba(255, 255, 255, 0.04);
+    --bg-card: rgba(255, 255, 255, 0.06);
+    --bg-card-hover: rgba(255, 255, 255, 0.1);
+    --bg-input: rgba(0, 0, 0, 0.4);
+
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    --text-muted: rgba(255, 255, 255, 0.45);
+    --text-accent: #a29bfe;
+
+    --border-subtle: rgba(255, 255, 255, 0.1);
+    --border-glow: rgba(255, 255, 255, 0.22);
+    --shadow-card: 0 10px 40px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.08);
+    --shadow-glow: 0 0 30px rgba(108, 92, 231, 0.15);
+}
+
+[data-theme="dark"] .orb-1 { background: radial-gradient(circle, #6c5ce7, transparent 70%); opacity: 0.4; }
+[data-theme="dark"] .orb-2 { background: radial-gradient(circle, #0072ff, transparent 70%); opacity: 0.35; }
+[data-theme="dark"] .orb-3 { background: radial-gradient(circle, #e84393, transparent 70%); opacity: 0.3; }
+[data-theme="dark"] .glass-panel { background: rgba(255, 255, 255, 0.03); border-color: rgba(255, 255, 255, 0.06); }
+
+[data-theme="dark"] .top-nav { background: rgba(0, 0, 0, 0.45); border-bottom-color: rgba(255,255,255,0.08); box-shadow: 0 4px 30px rgba(0,0,0,0.5); }
+[data-theme="dark"] .class-badge { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); color: #a29bfe; }
+
+[data-theme="dark"] textarea,
+[data-theme="dark"] input[type="text"] { background: rgba(0,0,0,0.4); border-color: rgba(255,255,255,0.08); box-shadow: inset 0 2px 4px rgba(0,0,0,0.4); }
+
+[data-theme="dark"] .btn-chip { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.08); }
+[data-theme="dark"] .btn-chip:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.15); }
+[data-theme="dark"] .btn-icon { background: rgba(255,255,255,0.05); }
+[data-theme="dark"] .btn-icon:hover { background: rgba(255,255,255,0.1); }
+
+[data-theme="dark"] .btn-danger { background: rgba(239,68,68,0.15); color: #ff6b6b; }
+[data-theme="dark"] .btn-success { background: rgba(16,185,129,0.15); color: #55efc4; }
+
+[data-theme="dark"] .parse-result.success { color: #55efc4; }
+[data-theme="dark"] .parse-result.error { color: #ff6b6b; }
+[data-theme="dark"] .class-info { color: #a29bfe; }
+
+[data-theme="dark"] .danger-SAFE { color: #00e676; }
+[data-theme="dark"] .danger-CAUTION { color: #ffab00; }
+[data-theme="dark"] .danger-DANGER { color: #ff5252; }
+[data-theme="dark"] .danger-PANIC { color: #d500f9; }
+[data-theme="dark"] .danger-OVERDUE { color: #9e9e9e; }
+[data-theme="dark"] .overdue-count { color: #ff5252; }
+
+[data-theme="dark"] .meta-tag { background: rgba(255,255,255,0.04); }
+[data-theme="dark"] .suggestion-item { background: rgba(255,255,255,0.03); }
+[data-theme="dark"] .suggestion-item:hover { background: rgba(255,255,255,0.06); }
+[data-theme="dark"] .notif-item { background: rgba(255,255,255,0.03); }
+
+[data-theme="dark"] .toast { border-color: rgba(255,255,255,0.1); box-shadow: 0 8px 30px rgba(0,0,0,0.5); }
+[data-theme="dark"] .toast-success { background: rgba(16,185,129,0.18); color: #55efc4; }
+[data-theme="dark"] .toast-error { background: rgba(239,68,68,0.18); color: #ff6b6b; }
+[data-theme="dark"] .toast-info { background: rgba(108,92,231,0.18); color: #a29bfe; }
+[data-theme="dark"] .toast-warning { background: rgba(245,158,11,0.18); color: #fdcb6e; }
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); }
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
 html {
     font-size: 15px;
     scroll-behavior: smooth;
@@ -71,6 +137,7 @@ body {
     min-height: 100vh;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
+    transition: background 0.5s ease, color 0.3s ease;
 }
 
 /* ================================================================
@@ -119,6 +186,78 @@ body {
     25%      { transform: translate(60px, -40px) scale(1.1); }
     50%      { transform: translate(-30px, 50px) scale(0.95); }
     75%      { transform: translate(40px, 20px) scale(1.05); }
+}
+
+/* ---- Floating Glass Panels ---- */
+
+.glass-panel {
+    position: absolute;
+    border-radius: var(--radius-lg);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    pointer-events: none;
+}
+
+.glass-panel-1 {
+    width: 280px; height: 180px;
+    top: 12%; left: 8%;
+    transform: rotate(-12deg);
+    animation: glassFloat1 18s ease-in-out infinite;
+}
+
+.glass-panel-2 {
+    width: 200px; height: 140px;
+    top: 55%; right: 6%;
+    transform: rotate(8deg);
+    animation: glassFloat2 22s ease-in-out infinite;
+}
+
+.glass-panel-3 {
+    width: 160px; height: 220px;
+    bottom: 10%; left: 25%;
+    transform: rotate(15deg);
+    animation: glassFloat3 20s ease-in-out infinite;
+}
+
+.glass-panel-4 {
+    width: 240px; height: 120px;
+    top: 35%; right: 20%;
+    transform: rotate(-6deg);
+    animation: glassFloat4 24s ease-in-out infinite;
+}
+
+@keyframes glassFloat1 {
+    0%, 100% { transform: rotate(-12deg) translate(0, 0); opacity: 0.6; }
+    33%      { transform: rotate(-8deg) translate(30px, -20px); opacity: 0.8; }
+    66%      { transform: rotate(-15deg) translate(-20px, 25px); opacity: 0.5; }
+}
+
+@keyframes glassFloat2 {
+    0%, 100% { transform: rotate(8deg) translate(0, 0); opacity: 0.5; }
+    40%      { transform: rotate(12deg) translate(-25px, 30px); opacity: 0.7; }
+    70%      { transform: rotate(5deg) translate(20px, -15px); opacity: 0.4; }
+}
+
+@keyframes glassFloat3 {
+    0%, 100% { transform: rotate(15deg) translate(0, 0); opacity: 0.4; }
+    50%      { transform: rotate(10deg) translate(40px, -30px); opacity: 0.7; }
+}
+
+@keyframes glassFloat4 {
+    0%, 100% { transform: rotate(-6deg) translate(0, 0); opacity: 0.5; }
+    35%      { transform: rotate(-2deg) translate(-30px, 20px); opacity: 0.3; }
+    65%      { transform: rotate(-10deg) translate(15px, -25px); opacity: 0.6; }
+}
+
+.theme-icon {
+    font-size: 1.2rem;
+    transition: transform 0.4s var(--ease-out);
+}
+
+#btnThemeToggle:hover .theme-icon {
+    transform: rotate(30deg) scale(1.15);
 }
 
 /* ================================================================

@@ -29,6 +29,28 @@ const notifCount = $("#notifCount");
 const overdueInfo = $("#overdueInfo");
 const toastContainer = $("#toastContainer");
 const btnNotifications = $("#btnNotifications");
+const btnThemeToggle = $("#btnThemeToggle");
+
+// ── Theme Toggle ──
+function applyTheme(theme) {
+  if (theme === "dark") {
+    document.documentElement.setAttribute("data-theme", "dark");
+    btnThemeToggle.querySelector(".theme-icon").textContent = "☀️";
+  } else {
+    document.documentElement.removeAttribute("data-theme");
+    btnThemeToggle.querySelector(".theme-icon").textContent = "🌙";
+  }
+  localStorage.setItem("pulse_theme", theme);
+}
+
+const savedTheme = localStorage.getItem("pulse_theme") || "light";
+applyTheme(savedTheme);
+
+btnThemeToggle.addEventListener("click", () => {
+  const current = document.documentElement.getAttribute("data-theme");
+  applyTheme(current === "dark" ? "light" : "dark");
+  toast(current === "dark" ? "Switched to Light Mode ☀️" : "Switched to Dark Mode 🌙", "info");
+});
 
 async function api(endpoint, opts = {}) {
   const url = `${API}${endpoint}`;
