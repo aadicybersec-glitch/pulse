@@ -143,6 +143,6 @@ class NotificationScheduler:
             "due_date": deadline.get("due_date", ""),
             "alert_type": alert_type,
             "message": messages.get(alert_type, "Deadline approaching!"),
-            "timestamp": datetime.now().isoformat(),
+            "timestamp": datetime.now().isoformat() + "Z",
             "immediate": False,
         }

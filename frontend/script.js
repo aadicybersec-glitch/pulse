@@ -2,7 +2,7 @@ const API = window.location.origin;
 let currentClassCode = null;
 let currentFilter = "all";
 let countdownInterval = null;
-let lastNotifiedTime = localStorage.getItem("lastNotifiedTime") || new Date().toISOString();
+let lastNotifiedTime = localStorage.getItem("pulse_last_notified_v2") || new Date().toISOString();
 
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
@@ -216,7 +216,7 @@ async function refreshNotifications() {
     const newestTime = new Date(n[0].timestamp);
     if (newestTime > new Date(lastNotifiedTime)) {
       lastNotifiedTime = n[0].timestamp;
-      localStorage.setItem("lastNotifiedTime", lastNotifiedTime);
+      localStorage.setItem("pulse_last_notified_v2", lastNotifiedTime);
     }
   }
 
