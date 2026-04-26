@@ -93,7 +93,11 @@ def add_deadline():
         }), 422
 
     # 2. Enrich with class & user info
-    parsed["class_code"] = body.get("class_code")
+    class_code = body.get("class_code")
+    if not class_code:
+        return jsonify({"error": "Please join a class room first to add deadlines!"}), 403
+
+    parsed["class_code"] = class_code
     parsed["created_by"] = body.get("user", "anonymous")
 
     # 3. Add to engine
@@ -120,6 +124,15 @@ def get_deadlines():
     """
     class_code = request.args.get("class_code")
     boosted = request.args.get("boosted", "false").lower() == "true"
+
+    # Enforce class isolation: if no class_code is provided, return empty list
+    if not class_code:
+        return jsonify({
+            "ok": True,
+            "count": 0,
+            "deadlines": [],
+            "message": "Join a class to see deadlines."
+        })
 
     if boosted:
         deadlines = engine.priority_boosted(class_code)
@@ -200,18 +213,24 @@ def list_classes():
 @app.route("/analytics/stress", methods=["GET"])
 def stress():
     class_code = request.args.get("class_code")
+    if not class_code:
+        return jsonify({"ok": True, "score": 0, "level": "NONE", "message": "Join a class to see stress analytics."})
     return jsonify({"ok": True, **engine.stress_score(class_code)})
 
 
 @app.route("/analytics/suggestions", methods=["GET"])
 def suggestions():
     class_code = request.args.get("class_code")
+    if not class_code:
+        return jsonify({"ok": True, "suggestions": ["Join a class room to get smart suggestions."] })
     return jsonify({"ok": True, "suggestions": engine.suggestions(class_code)})
 
 
 @app.route("/analytics/overdue", methods=["GET"])
 def overdue():
     class_code = request.args.get("class_code")
+    if not class_code:
+        return jsonify({"ok": True, "count": 0, "subjects_affected": [], "message": "No class joined."})
     return jsonify({"ok": True, **engine.overdue_history(class_code)})
 
 
@@ -220,9 +239,10 @@ def overdue():
 @app.route("/notifications", methods=["GET"])
 def notifications():
     limit = int(request.args.get("limit", 50))
+    class_code = request.args.get("class_code")
     return jsonify({
         "ok": True,
-        "notifications": notifier.get_log(limit),
+        "notifications": notifier.get_log(limit, class_code),
         "pending_jobs": notifier.pending_count(),
     })
 

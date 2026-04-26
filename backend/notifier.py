@@ -105,9 +105,12 @@ class NotificationScheduler:
                 pass
             self._scheduled_ids.discard(job_id)
 
-    def get_log(self, limit: int = 50) -> list[dict]:
-        """Return recent notifications, newest first."""
-        return list(reversed(_notification_log[-limit:]))
+    def get_log(self, limit: int = 50, class_code: Optional[str] = None) -> list[dict]:
+        """Return recent notifications, newest first, optionally filtered by class."""
+        log = _notification_log
+        if class_code:
+            log = [n for n in log if n.get("class_code") == class_code]
+        return list(reversed(log[-limit:]))
 
     def pending_count(self) -> int:
         """Return number of jobs currently scheduled."""
@@ -142,6 +145,7 @@ class NotificationScheduler:
             "subject": deadline.get("subject", ""),
             "due_date": deadline.get("due_date", ""),
             "alert_type": alert_type,
+            "class_code": deadline.get("class_code"),
             "message": messages.get(alert_type, "Deadline approaching!"),
             "timestamp": datetime.now().isoformat() + "Z",
             "immediate": False,

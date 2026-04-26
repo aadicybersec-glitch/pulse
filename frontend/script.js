@@ -226,7 +226,8 @@ async function refreshOverdue() {
 }
 
 async function refreshNotifications() {
-  const res = await api("/notifications?limit=20"); if (res.error) return;
+  const qs = currentClassCode ? `?class_code=${currentClassCode}&limit=20` : "?limit=20";
+  const res = await api(`/notifications${qs}`); if (res.error) return;
   const n = res.notifications||[];
   
   if ("Notification" in window && Notification.permission === "granted") {
