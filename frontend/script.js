@@ -198,9 +198,19 @@ async function refreshNotifications() {
   
   if ("Notification" in window && Notification.permission === "granted") {
     const newNotifs = n.filter(x => new Date(x.timestamp) > new Date(lastNotifiedTime));
-    newNotifs.reverse().forEach(x => {
-      new Notification("PULSE Alert", { body: x.message });
-    });
+    if (newNotifs.length > 0) {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.ready.then(registration => {
+          newNotifs.reverse().forEach(x => {
+            registration.showNotification("PULSE Alert", { body: x.message, icon: "/favicon.ico", vibrate: [200, 100, 200] });
+          });
+        });
+      } else {
+        newNotifs.reverse().forEach(x => {
+          new Notification("PULSE Alert", { body: x.message });
+        });
+      }
+    }
   }
   if (n.length > 0) {
     const newestTime = new Date(n[0].timestamp);
@@ -235,6 +245,9 @@ btnNotifications.addEventListener("click", () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(err => console.error("SW reg failed:", err));
+  }
   refreshAll();
   setInterval(refreshNotifications, 15000);
   setInterval(() => { refreshStress(); refreshSuggestions(); refreshOverdue(); }, 30000);
