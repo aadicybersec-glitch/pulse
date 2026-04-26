@@ -2,6 +2,7 @@ const API = window.location.origin;
 let currentClassCode = null;
 let currentFilter = "all";
 let countdownInterval = null;
+let lastNotifiedTime = localStorage.getItem("lastNotifiedTime") || new Date().toISOString();
 
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => document.querySelectorAll(sel);
@@ -27,6 +28,7 @@ const notifList = $("#notifList");
 const notifCount = $("#notifCount");
 const overdueInfo = $("#overdueInfo");
 const toastContainer = $("#toastContainer");
+const btnNotifications = $("#btnNotifications");
 
 async function api(endpoint, opts = {}) {
   const url = `${API}${endpoint}`;
@@ -193,12 +195,44 @@ async function refreshOverdue() {
 async function refreshNotifications() {
   const res = await api("/notifications?limit=20"); if (res.error) return;
   const n = res.notifications||[];
+  
+  if ("Notification" in window && Notification.permission === "granted") {
+    const newNotifs = n.filter(x => new Date(x.timestamp) > new Date(lastNotifiedTime));
+    newNotifs.reverse().forEach(x => {
+      new Notification("PULSE Alert", { body: x.message });
+    });
+  }
+  if (n.length > 0) {
+    const newestTime = new Date(n[0].timestamp);
+    if (newestTime > new Date(lastNotifiedTime)) {
+      lastNotifiedTime = n[0].timestamp;
+      localStorage.setItem("lastNotifiedTime", lastNotifiedTime);
+    }
+  }
+
   if (n.length===0) { notifList.innerHTML='<p class="muted">No notifications yet.</p>'; notifCount.style.display="none"; return; }
   notifCount.style.display="inline"; notifCount.textContent=n.length;
   notifList.innerHTML = n.map(x => `<div class="notif-item">${esc(x.message)}<span class="notif-time">${new Date(x.timestamp).toLocaleTimeString()}</span></div>`).join("");
 }
 
 async function refreshAll() { await Promise.all([renderDeadlines(),refreshStress(),refreshSuggestions(),refreshOverdue(),refreshNotifications()]); }
+
+btnNotifications.addEventListener("click", () => {
+  if (!("Notification" in window)) {
+    toast("Browser does not support push notifications", "warning");
+    return;
+  }
+  if (Notification.permission === "default") {
+    Notification.requestPermission().then(permission => {
+      if (permission === "granted") toast("Push notifications enabled!", "success");
+      else toast("Push notifications denied.", "info");
+    });
+  } else if (Notification.permission === "granted") {
+    toast("Push notifications are already enabled.", "success");
+  } else {
+    toast("Push notifications are blocked by your browser.", "warning");
+  }
+});
 
 document.addEventListener("DOMContentLoaded", () => {
   refreshAll();
