@@ -37,41 +37,123 @@ SUBJECT_KEYWORDS: list[str] = [
 
 # ── Task-type keywords ────────────────────────────────────────────────────────
 TASK_TYPE_KEYWORDS: dict[str, list[str]] = {
-    "assignment": ["assignment", "homework", "hw", "task", "problem set", "pset"],
-    "exam":       ["exam", "test", "quiz", "midterm", "final", "assessment"],
-    "project":    ["project", "presentation", "demo", "prototype"],
-    "record":     ["record", "journal", "observation", "lab record", "practical"],
-    "submission": ["submission", "submit", "deadline", "due"],
-    "meeting":    ["meeting", "class", "lecture", "seminar", "workshop"],
-    "reading":    ["reading", "chapter", "textbook", "study", "revision", "revise"],
+    "assignment": [
+        "assignment", "homework", "hw", "task", "problem set", "pset",
+        "exercise", "worksheet", "written work", "take-home", "classwork"
+    ],
+    "exam": [
+        "exam", "test", "quiz", "midterm", "final", "assessment",
+        "viva", "oral", "mcq", "objective", "entrance", "evaluation"
+    ],
+    "project": [
+        "project", "presentation", "demo", "prototype",
+        "ppt", "slides", "seminar topic", "mini project", "major project",
+        "case study", "design project"
+    ],
+    "record": [
+        "record", "journal", "observation", "lab record", "practical",
+        "lab manual", "experiment writeup", "record work", "notebook submission"
+    ],
+    "submission": [
+        "submission", "submit", "deadline", "due",
+        "turn in", "hand in", "upload", "last date", "closing date"
+    ],
+    "meeting": [
+        "meeting", "class", "lecture", "seminar", "workshop",
+        "session", "discussion", "group meeting", "review meeting", "briefing"
+    ],
+    "reading": [
+        "reading", "chapter", "textbook", "study", "revision", "revise",
+        "notes", "prepare", "learn", "syllabus", "portion", "topics"
+    ],
+    "coding": [
+        "code", "coding", "program", "implementation", "develop",
+        "debug", "build", "script", "algorithm", "logic"
+    ],
+    "research": [
+        "research", "analysis", "investigation", "survey",
+        "paper", "report", "study material", "literature review"
+    ],
+    "practice": [
+        "practice", "solve", "problems", "questions",
+        "numericals", "examples", "drill", "workout"
+    ]
 }
 
 # ── Weekday mapping ───────────────────────────────────────────────────────────
 WEEKDAYS = {
+    # Full names
     "monday": 0, "tuesday": 1, "wednesday": 2, "thursday": 3,
     "friday": 4, "saturday": 5, "sunday": 6,
+
+    # Standard short forms
     "mon": 0, "tue": 1, "wed": 2, "thu": 3,
     "fri": 4, "sat": 5, "sun": 6,
+
+    # Alternate abbreviations
+    "tues": 1, "weds": 2, "thur": 3, "thurs": 3,
+    "fri.": 4, "sat.": 5, "sun.": 6,
+
+    # Common informal/slang
+    "morn": 0, "tuesd": 1, "wedn": 2, "thurday": 3,
+    "frid": 4, "satur": 5, "sund": 6,
+
+    # Case-insensitive handling (optional if you normalize input)
+    "Mon": 0, "Tue": 1, "Wed": 2, "Thu": 3,
+    "Fri": 4, "Sat": 5, "Sun": 6
 }
 
 # ── Time-of-day defaults ──────────────────────────────────────────────────────
 TIME_OF_DAY = {
+    # Standard
     "morning":   (9,  0),
     "afternoon": (14, 0),
     "evening":   (18, 0),
     "night":     (21, 0),
-    "midnight":  (23, 59),
+    "midnight":  (0,  0),
     "noon":      (12, 0),
-}
 
+    # Variations
+    "early morning": (6, 0),
+    "late morning":  (10, 30),
+    "early afternoon": (13, 0),
+    "late afternoon":  (16, 30),
+    "late evening": (20, 0),
+
+    # Informal / slang
+    "morning time": (9, 0),
+    "eve": (18, 0),
+    "nite": (21, 0),
+
+    # Common phrases
+    "today morning": (9, 0),
+    "tomorrow morning": (9, 0),
+    "tonight": (21, 0),
+
+    # Indian usage (very common in your context)
+    "early": (7, 0),
+    "late": (20, 0)
+}
 # ── Month names ───────────────────────────────────────────────────────────────
 MONTHS = {
+    # Full names
     "january": 1, "february": 2, "march": 3, "april": 4,
     "may": 5, "june": 6, "july": 7, "august": 8,
     "september": 9, "october": 10, "november": 11, "december": 12,
+
+    # Standard abbreviations
     "jan": 1, "feb": 2, "mar": 3, "apr": 4,
-    "jun": 6, "jul": 7, "aug": 8,
+    "may": 5, "jun": 6, "jul": 7, "aug": 8,
     "sep": 9, "oct": 10, "nov": 11, "dec": 12,
+
+    # Alternate forms
+    "sept": 9,
+    "febr": 2,
+
+    # With dots (common in typed notes)
+    "jan.": 1, "feb.": 2, "mar.": 3, "apr.": 4,
+    "jun.": 6, "jul.": 7, "aug.": 8,
+    "sep.": 9, "sept.": 9, "oct.": 10, "nov.": 11, "dec.": 12,
 }
 
 
